@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class MemberDAO {
 	
@@ -36,27 +37,27 @@ public class MemberDAO {
 	
 	//데이터베이스 요청작업 (insert,delete,select........)
 	
-	public List<MemberVO> getList() {
+	public Vector<MemberVO> getList() {
 		String sql = "select * from membertbl";
-		List<MemberVO> list = new ArrayList<MemberVO>();
+		Vector<MemberVO> vec = new Vector<MemberVO>();
 		
 		try(Connection con = getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);
 				ResultSet rs = pstmt.executeQuery()) {
 			
-			MemberVO vo = new MemberVO();
 			
-			if(rs.next()) {
-				vo.setNo(rs.getInt("no"));
-				vo.setName(rs.getString("name"));
-				vo.setAge(rs.getInt("age"));
-				vo.setGender(rs.getString("gender"));
-				list.add(vo);
+			while(rs.next()) {
+				MemberVO vo = new MemberVO();
+				vo.setNo(rs.getInt(1));
+				vo.setName(rs.getString(2));
+				vo.setAge(rs.getInt(3));
+				vo.setGender(rs.getString(4));
+				vec.add(vo);
 			}
 			
 		} catch (Exception e) {
 		}
-		return list;
+		return vec;
 	}
 	
 	
