@@ -266,5 +266,6 @@ public class MemberTable extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(this, "삭제실패");
 			}
 		}
+		System.out.println("원격 저장소 추가");
 	}
 }
