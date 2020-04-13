@@ -13,12 +13,9 @@ import database.MemberVO;
 
 import javax.swing.JTabbedPane;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JTable;
@@ -26,7 +23,7 @@ import java.awt.GridBagLayout;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 
-public class MemberTable extends JFrame implements ActionListener{
+public class MemberTable extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtName;
@@ -41,7 +38,6 @@ public class MemberTable extends JFrame implements ActionListener{
 	private JTable table_1;
 	private MemberDAO dao;
 	private DefaultTableModel model;
-	private DefaultTableModel model1;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -111,16 +107,9 @@ public class MemberTable extends JFrame implements ActionListener{
 		
 		JButton btnNewButton = new JButton("조회");
 		panel_4.add(btnNewButton);
-		btnNewButton.addActionListener(this);
 		
-		JScrollPane scrollPane1 = new JScrollPane();
-		model1=getModel();
-		table = new JTable(model1);
-		
-		scrollPane1.setViewportView(table);
-		
-		
-		panel_1.add(scrollPane1, BorderLayout.CENTER);
+		table = new JTable();
+		panel_1.add(table, BorderLayout.CENTER);
 		
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("회원 수정", null, panel_2, null);
@@ -167,7 +156,6 @@ public class MemberTable extends JFrame implements ActionListener{
 		textField_4.setColumns(10);
 		
 		JButton btnNewButton_2 = new JButton("삭제");
-		btnNewButton_2.addActionListener(this);
 		panel_3.add(btnNewButton_2);
 		
 		JPanel panel_6 = new JPanel();
@@ -177,39 +165,22 @@ public class MemberTable extends JFrame implements ActionListener{
 		JScrollPane scrollPane = new JScrollPane();
 		panel_6.add(scrollPane, BorderLayout.CENTER);
 			
-//		//membertbl의 전체 내용 가져오기
-//		String columnNames[] = {"번호","이름","나이","성별"};
-//		model = new DefaultTableModel(columnNames,0) {
-//			
-//			@Override
-//			public boolean isCellEditable(int row, int column) {
-//				return false;
-//			}
-//		};
+		//membertbl의 전체 내용 가져오기
+		String columnNames[] = {"번호","이름","나이","성별"};
+		model = new DefaultTableModel(columnNames,0) {
+			
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 		
-		table_1 = new JTable(getModel());
+		table_1 = new JTable(model);
 		list();
 		
 		
 		scrollPane.setViewportView(table_1);
-		
-		//회원등록 화면의 성별
-		txtGender.addActionListener(this);
 	}
-	
-	public DefaultTableModel getModel() {
-				String columnNames[] = {"번호","이름","나이","성별"};
-				model = new DefaultTableModel(columnNames,0) {
-					
-					@Override
-					public boolean isCellEditable(int row, int column) {
-						return false;
-					}
-				};
-				return model;
-	}
-	
-	
 	
 	public void list() {
 		Vector<MemberVO> vec =dao.getList();
@@ -220,54 +191,5 @@ public class MemberTable extends JFrame implements ActionListener{
 		model.addRow(objlist);
 		}
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-		if(e.getSource()==txtGender) {
-			//이름과 나이와 성별을 가져온 후 데이터 베이스에 입력하기
-			MemberDAO dao = new MemberDAO();
-			MemberVO vo = new MemberVO();
-			vo.setNo(0);
-			vo.setName(txtName.getText());
-			vo.setAge(Integer.parseInt( txtAge.getText()));
-			vo.setGender(txtGender.getText());
-			
-			int result=dao.insert(vo);
-			if(result>0) {
-				JOptionPane.showMessageDialog(this,"입력성공");
-				model.setNumRows(0); // 기존모델 지우기
-				list();
-			}else {
-				JOptionPane.showMessageDialog(this,"입력실패");
-			}
-			
-		}else if (e.getActionCommand().equals("조회")) {
-			int no = Integer.parseInt(textField.getText());
-			MemberVO vo = new MemberVO();
-			vo = dao.getRow(no);
-			Object[] obj = {vo.getNo(),vo.getName(),vo.getAge(),vo.getGender()};
-			model1.setNumRows(0);
-			model1.addRow(obj);
-		} else if (e.getActionCommand().equals("삭제")) {
-			
-			MemberDAO dao = new MemberDAO();
-			int no = Integer.parseInt(textField_4.getText());
-			int result = dao.delete(no);
-			if(result>0) {
-				JOptionPane.showMessageDialog(this, "삭제성공");
-				dao.delete(no);
-			textField_4.setText("");
-			model.setNumRows(0);
-			list();
-			}else {
-				
-				JOptionPane.showMessageDialog(this, "삭제실패");
-			}
-			
-			
-		}
-		
-		
-	}
 }
+
