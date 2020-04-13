@@ -117,10 +117,6 @@ public class MemberDAO {
 		return result;
 	}
 	
-	//asdawd 테스트
-	
-	
-	
 	
 	
 	
