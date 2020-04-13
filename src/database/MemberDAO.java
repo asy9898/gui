@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import com.mysql.cj.x.protobuf.MysqlxPrepare.Prepare;
+
 public class MemberDAO {
 	
 	static {
@@ -60,7 +62,60 @@ public class MemberDAO {
 		return vec;
 	}
 	
+	public int insert(MemberVO vo) {
+		String sql="insert into membertbl(no,name,age,gender) values(member_seq.nextval,?,?,?)";
+		int result = 0;
+		try (Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)){
+			pstmt.setString(1, vo.getName());
+			pstmt.setInt(2, vo.getAge());
+			pstmt.setString(3, vo.getGender());
+			
+			result=pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	
+	public MemberVO getRow(int no) {
+		String sql = "select * from membertbl where no=?";
+		MemberVO vo = null;
+		
+		try(Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)) {
+			pstmt.setInt(1, no);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				vo = new MemberVO();
+				vo.setNo(rs.getInt(1));
+				vo.setName(rs.getString("name"));
+				vo.setAge(rs.getInt(3));
+				vo.setGender(rs.getString("gender"));
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return vo;
+	}
+	
+	//no값을 이용해서 회원 삭제하기
+	public int delete(int no) {
+		int result = 0;
+		String sql = "delete from membertbl where no=?";
+		
+		try (Connection con = getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)){ // 괄호안에 넣으면 try문이 끝날때 finally close문을 안사용해도 자동으로 닫힘
+					
+					pstmt.setInt(1, no);
+					result = pstmt.executeUpdate();
+		} catch (Exception e) {
+		}
+		
+		return result;
+	}
 	
 	//asdawd 테스트
 	
