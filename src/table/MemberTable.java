@@ -265,6 +265,10 @@ public class MemberTable extends JFrame implements ActionListener{
 				
 				JOptionPane.showMessageDialog(this, "삭제실패");
 			}
+		} else if (e.getActionCommand().equals("수정")) {
+			
+		} else if (e.getActionCommand().equals("조회 2")) {
+			
 		}
 	}
 }
